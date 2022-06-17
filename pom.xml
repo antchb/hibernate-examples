@@ -14,6 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <hibernate.version>6.1.0.Final</hibernate.version>
   </properties>
 
   <dependencies>
@@ -25,8 +26,44 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>6.1.0.Final</version>
+      <version>${hibernate.version}</version>
+    </dependency>
+
+    <!-- We need next two libraries to support Static Metamodel Generation for Criteria Builder. Example: User_.firstName -->
+    <dependency>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+      <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jpamodelgen</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+        <!-- Static Metamodel Generation for Criteria Builder. Hibernate provides a Maven plugin capable of
+             providing build-time enhancement of the domain model as they are compiled as part of a Maven build -->
+        <plugin>
+          <groupId>org.hibernate.orm.tooling</groupId>
+          <artifactId>hibernate-enhance-maven-plugin</artifactId>
+          <version>${hibernate.version}</version>
+          <executions>
+            <execution>
+              <configuration>
+                <failOnError>true</failOnError>
+                <enableLazyInitialization>true</enableLazyInitialization>
+                <enableDirtyTracking>true</enableDirtyTracking>
+                <enableAssociationManagement>true</enableAssociationManagement>
+            </configuration>
+              <goals>
+                <goal>enhance</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+    </plugins>
+  </build>
 </project>

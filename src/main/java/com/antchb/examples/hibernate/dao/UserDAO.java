@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.antchb.examples.hibernate.entity.User;
+import com.antchb.examples.hibernate.entity.User_;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -82,8 +83,30 @@ public class UserDAO implements IUserDAO {
             CriteriaBuilder cb = session.getCriteriaBuilder();
 
             CriteriaQuery<User> criteria = cb.createQuery(User.class);
-            Root<User> from = criteria.from(User.class);
-            criteria.select(from);
+            Root<User> root = criteria.from(User.class);
+            criteria.select(root);
+
+            users = session.createQuery(criteria).getResultList();
+
+            session.getTransaction().commit();
+        }
+
+        return users;
+    }
+
+    @Override
+    public List<User> getAllByFirstName(String firstName) {
+        List<User> users;
+
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+
+            CriteriaQuery<User> criteria = cb.createQuery(User.class);
+            Root<User> root = criteria.from(User.class);
+            criteria.select(root);
+            criteria.where(cb.like(root.get(User_.firstName), firstName));
 
             users = session.createQuery(criteria).getResultList();
 

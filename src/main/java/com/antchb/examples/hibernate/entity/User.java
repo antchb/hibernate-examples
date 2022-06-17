@@ -3,7 +3,6 @@ package com.antchb.examples.hibernate.entity;
 import java.util.Date;
 import java.util.Scanner;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
@@ -45,6 +44,11 @@ public class User {
         scanValues(in);
     }
 
+    public void updateValues(Scanner scanner) {
+        System.out.println("\n### Enter new values for the user:\n");
+        scanValues(scanner);
+    }
+    
     private void scanValues(Scanner in) {
         System.out.print(String.format("\n[First Name] (%s): ", firstName));
         firstName = in.nextLine();
@@ -53,11 +57,6 @@ public class User {
         lastName = in.nextLine();
 
         fingerprintId = null;
-    }
-
-    public void updateValues(Scanner scanner) {
-        System.out.println("\n### Enter new values for the user:\n");
-        scanValues(scanner);
     }
 
     public void updateValues(User user) {

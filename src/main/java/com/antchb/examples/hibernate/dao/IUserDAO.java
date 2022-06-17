@@ -17,4 +17,6 @@ public interface IUserDAO {
 
     List<User> getAll();
 
+    List<User> getAllByFirstName(String firstName);
+
 }

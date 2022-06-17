@@ -49,12 +49,13 @@ public class Main {
         displayAllUsers(userDao);
         deleteUser(userDao, in);
         displayAllUsers(userDao);
+        displayAllUsersLikeFirstName(userDao, in);
     }
 
     private static void displayAllUsers(IUserDAO userDao) {
         List<User> users = userDao.getAll();
 
-        System.out.println("\nAll Users:\n");
+        System.out.println("\n### All Users:\n");
 
         if (users != null) {
             users.forEach(u -> System.out.println(u));
@@ -69,8 +70,7 @@ public class Main {
     private static void updateUser(IUserDAO userDao, Scanner in) {
         System.out.print("\n### Trying to update a user record. Please, enter ID: ");
 
-        Long id = in.nextLong();
-        in.nextLine();
+        Long id = Long.parseLong(in.nextLine());
         Optional<User> user = userDao.get(id);
 
         if (!user.isPresent()) {
@@ -85,7 +85,19 @@ public class Main {
     private static void deleteUser(IUserDAO userDao, Scanner in) {
         System.out.print("\n### Trying to delete a user record. Please, enter ID: ");
 
-        Long id = in.nextLong();
+        Long id = Long.parseLong(in.nextLine());
         userDao.delete(id);
+    }
+
+    private static void displayAllUsersLikeFirstName(IUserDAO userDao, Scanner in) {
+        System.out.print("\n### Trying to display users with the first name like entered value.\n" +
+                         "\nPlease, enter [First Name]: ");
+
+        String firstName = in.nextLine();
+        List<User> users = userDao.getAllByFirstName(firstName);
+
+        if (users != null) {
+            users.forEach(u -> System.out.println(u));
+        }
     }
 }
