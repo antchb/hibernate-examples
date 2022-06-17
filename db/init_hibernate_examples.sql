@@ -12,7 +12,7 @@ CREATE SCHEMA IF NOT EXISTS users_control;
 
 CREATE TABLE IF NOT EXISTS users_control.fingerprints (
   fingerprint_id SERIAL PRIMARY KEY,
-  data BYTEA NOT NULL,
+  data BYTEA,
   notes VARCHAR(1024),
   upd_dt TIMESTAMP
 );

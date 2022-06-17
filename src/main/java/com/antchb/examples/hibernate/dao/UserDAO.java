@@ -45,11 +45,9 @@ public class UserDAO implements IUserDAO {
 
     @Override
     public void delete(Long id) {
-        User user;
-
         try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
-            user = session.get(User.class, id);
+            User user = session.get(User.class, id);
 
             if (user != null) {
                 session.remove(user);

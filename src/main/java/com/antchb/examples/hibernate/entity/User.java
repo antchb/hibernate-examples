@@ -5,11 +5,14 @@ import java.util.Scanner;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -29,8 +32,9 @@ public class User {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "fingerprint_id")
-    private Long fingerprintId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fingerprint_id")
+    private Fingerprint fingerprint;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -39,30 +43,29 @@ public class User {
 
     public User() { }
 
-    public User(Scanner in) {
+    public User(Scanner in, Fingerprint fingerprint) {
         System.out.println("\n### Enter values for a new user:\n");
         scanValues(in);
+        this.fingerprint = fingerprint;
     }
 
-    public void updateValues(Scanner scanner) {
+    public void updateValues(Scanner in) {
         System.out.println("\n### Enter new values for the user:\n");
-        scanValues(scanner);
+        scanValues(in);
     }
     
     private void scanValues(Scanner in) {
-        System.out.print(String.format("\n[First Name] (%s): ", firstName));
+        System.out.print(String.format("%n[First Name] (%s): ", firstName));
         firstName = in.nextLine();
 
-        System.out.print(String.format("\n[Last Name] (%s): ", lastName));
+        System.out.print(String.format("%n[Last Name] (%s): ", lastName));
         lastName = in.nextLine();
-
-        fingerprintId = null;
     }
 
     public void updateValues(User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.fingerprintId = user.getFingerprintId();
+        this.fingerprint = user.getFingerprint();
     }
 
     public Long getUserId() {
@@ -77,8 +80,12 @@ public class User {
         return lastName;
     }
 
-    public Long getFingerprintId() {
-        return fingerprintId;
+    public Fingerprint getFingerprint() {
+        return fingerprint;
+    }
+
+    public void setFingerprint(Fingerprint fingerprint) {
+        this.fingerprint = fingerprint;
     }
 
     public Date getUpdDate() {
@@ -88,7 +95,7 @@ public class User {
     @Override
     public String toString() {
         return "User [userId=" + userId +", firstName=" + firstName + ", lastName=" + lastName +
-               ", fingerprintId=" + fingerprintId + ", updDate=" + updDate + "]";
+               ", fingerprint=" + fingerprint + ", updDate=" + updDate + "]";
     }
 
 }
