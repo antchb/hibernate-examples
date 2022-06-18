@@ -1,6 +1,8 @@
 package com.antchb.examples.hibernate.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Scanner;
 
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,10 +10,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -35,6 +39,9 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "fingerprint_id")
     private Fingerprint fingerprint;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+    List<UserIdentity> userIdentities;
 
     @UpdateTimestamp
     @Temporal(TemporalType.TIMESTAMP)
@@ -65,7 +72,6 @@ public class User {
     public void updateValues(User user) {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
-        this.fingerprint = user.getFingerprint();
     }
 
     public Long getUserId() {
@@ -92,10 +98,31 @@ public class User {
         return updDate;
     }
 
+    public void addUserIdentity(UserIdentity userIdentity) {
+        if (userIdentities == null) {
+            userIdentities = new ArrayList<>();
+        }
+        userIdentity.setUser(this);
+
+        userIdentities.add(userIdentity);
+    }
+
+    public List<UserIdentity> getUserIdentities() {
+        return userIdentities;
+    }
+
+    public void deleteUserIdentity(Long identityId) {
+        if (userIdentities == null) {
+            return;
+        }
+
+        userIdentities.removeIf(i -> identityId.equals(i.getIdentityId()));
+    }
+
     @Override
     public String toString() {
-        return "User [userId=" + userId +", firstName=" + firstName + ", lastName=" + lastName +
-               ", fingerprint=" + fingerprint + ", updDate=" + updDate + "]";
+        return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName + ", updDate="
+                + updDate + ", " + fingerprint + ", " +  userIdentities + "]";
     }
 
 }

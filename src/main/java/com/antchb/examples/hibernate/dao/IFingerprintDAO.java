@@ -9,4 +9,7 @@ public interface IFingerprintDAO {
     Optional<Fingerprint> get(Long id);
 
     void delete(Long id);
+
+    void add(Long userId, Fingerprint fingerprint);
+
 }

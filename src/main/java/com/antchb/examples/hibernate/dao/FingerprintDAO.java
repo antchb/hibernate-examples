@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import com.antchb.examples.hibernate.entity.Fingerprint;
+import com.antchb.examples.hibernate.entity.User;
 
 public class FingerprintDAO implements IFingerprintDAO {
 
@@ -43,4 +44,22 @@ public class FingerprintDAO implements IFingerprintDAO {
         }
     }
 
+    @Override
+    public void add(Long userId, Fingerprint fingerprint) {
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+            User user = session.get(User.class, userId);
+
+            if (user == null) {
+                System.out.println("Error! User not found! ID: " + userId);
+                return;
+            }
+
+            fingerprint.setUser(user);
+            user.setFingerprint(fingerprint);
+            session.persist(user);
+            
+            session.getTransaction().commit();
+        }
+    }
 }
