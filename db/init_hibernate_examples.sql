@@ -52,10 +52,11 @@ CREATE TABLE IF NOT EXISTS users_control.courses (
 );
 
 CREATE TABLE IF NOT EXISTS users_control.user_courses (
-  user_course_id SERIAL PRIMARY KEY,
   user_id INT,
   course_id INT,
-  upd_dt TIMESTAMP,
+  upd_dt TIMESTAMP DEFAULT CURRENT_DATE,
+
+  PRIMARY KEY(user_id, course_id),
   
   CONSTRAINT fk_user_courses_course_id
     FOREIGN KEY(course_id)

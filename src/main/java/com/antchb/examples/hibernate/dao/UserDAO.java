@@ -3,9 +3,11 @@ package com.antchb.examples.hibernate.dao;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import com.antchb.examples.hibernate.entity.Course;
 import com.antchb.examples.hibernate.entity.User;
 import com.antchb.examples.hibernate.entity.User_;
 
@@ -22,12 +24,17 @@ public class UserDAO implements IUserDAO {
     }
 
     @Override
-    public Optional<User> get(Long id) {
+    public Optional<User> get(Long id, boolean includeCourses) {
         Optional<User> user;
 
         try (Session session = factory.getCurrentSession()) {
             session.beginTransaction();
             user = Optional.ofNullable(session.get(User.class, id));
+
+            if (includeCourses && user.isPresent()) {
+                Hibernate.initialize(user.get().getCourses());
+            }
+
             session.getTransaction().commit();
         }
 
@@ -114,4 +121,43 @@ public class UserDAO implements IUserDAO {
         return users;
     }
 
+    public void addCourse(Long id, Course course) {
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+            User user = session.get(User.class, id);
+
+            if (user == null) {
+                System.out.println("Error! User not found! ID: " + id);
+                return;
+            }
+
+            user.addCourse(course);
+
+            session.getTransaction().commit();
+        }
+    }
+
+    public void deleteCourse(Long userId, Long courseId) {
+        try (Session session = factory.getCurrentSession()) {
+            session.beginTransaction();
+
+            User user = session.get(User.class, userId);
+
+            if (user == null) {
+                System.out.println("Error! User not found! ID: " + userId);
+                return;
+            }
+
+            List<Course> userCourses = user.getCourses();
+
+            boolean courseRemoved = userCourses != null && !userCourses.isEmpty() 
+                    && userCourses.removeIf(c -> courseId.equals(c.getCourseId()));
+
+            if (courseRemoved) {
+                session.persist(user);
+            }
+
+            session.getTransaction().commit();
+        }
+    }
 }

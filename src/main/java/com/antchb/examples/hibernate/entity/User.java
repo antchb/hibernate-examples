@@ -15,6 +15,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -47,6 +49,12 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "upd_dt")
     private Date updDate;
+
+    @ManyToMany(fetch = FetchType.LAZY,
+                cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "user_courses", schema = "users_control", joinColumns = @JoinColumn(name = "user_id"),
+               inverseJoinColumns = @JoinColumn(name = "course_id")) 
+    private List<Course> courses;
 
     public User() { }
 
@@ -117,6 +125,26 @@ public class User {
         }
 
         userIdentities.removeIf(i -> identityId.equals(i.getIdentityId()));
+    }
+
+    public void addCourse(Course course) {
+        if (courses == null) {
+            courses = new ArrayList<>();
+        }
+
+        courses.add(course);
+    }
+
+    public void deleteCourse(Long courseId) {
+        if (courses == null) {
+            return;
+        }
+
+        courses.removeIf(i -> courseId.equals(i.getCourseId()));
+    }
+
+    public List<Course> getCourses() {
+        return courses;
     }
 
     @Override
