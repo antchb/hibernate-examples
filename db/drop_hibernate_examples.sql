@@ -11,4 +11,4 @@
 DROP DATABASE IF EXISTS hibernate_examples WITH (FORCE);
 
 DROP ROLE hibernate_examples_role;
-DROP USER antchb;
+DROP USER hibernate_examples;

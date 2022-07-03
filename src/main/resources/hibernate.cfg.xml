@@ -6,8 +6,8 @@
         <!-- JDBC Database connection settings -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
         <property name="connection.url">jdbc:postgresql://localhost:5432/hibernate_examples?useSSL=false</property>
-        <property name="connection.username">antchb</property>
-        <property name="connection.password">antchb</property>
+        <property name="connection.username">hibernate_examples</property>
+        <property name="connection.password">hibernate_examples</property>
 
         <!-- JDBC connection pool settings ... using built-in test pool -->
         <property name="connection.pool_size">10</property>

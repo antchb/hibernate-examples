@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS users_control.user_courses (
 );
 
 -- Users + Roles
-CREATE USER antchb WITH ENCRYPTED PASSWORD 'antchb';
+CREATE USER hibernate_examples WITH ENCRYPTED PASSWORD 'hibernate_examples';
 CREATE ROLE hibernate_examples_role WITH NOLOGIN CONNECTION LIMIT -1;
 
 GRANT ALL ON SCHEMA users_control TO hibernate_examples_role;
@@ -81,4 +81,4 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA users_control TO hibernate_examples_role;
 GRANT ALL ON ALL FUNCTIONS IN SCHEMA users_control TO hibernate_examples_role;
 GRANT ALL ON ALL PROCEDURES IN SCHEMA users_control TO hibernate_examples_role;
 
-GRANT hibernate_examples_role TO antchb;
+GRANT hibernate_examples_role TO hibernate_examples;
